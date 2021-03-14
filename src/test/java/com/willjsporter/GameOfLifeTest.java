@@ -10,6 +10,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 class GameOfLifeTest {
+//    More complex initial states are illustrated in comments.
+//    Numbers indicating the initial cell layout with the value being the number of neighbours that cell has.
+//    _ represents an empty cell.
 
     @Test
     public void shouldInitialiseWithLivingCells_withSet() {
@@ -65,6 +68,9 @@ class GameOfLifeTest {
 
     @Test
     public void tickShouldKeepCellsAlive_forCellsWith3Neighbours() {
+//        1_1
+//        _3_
+//        1__
         Cell cellWithOneNeighbour1 = Cell.at(1,1);
         Cell cellWithOneNeighbour2 = Cell.at(1,3);
         Cell cellWithOneNeighbour3 = Cell.at(3,3);
@@ -77,6 +83,9 @@ class GameOfLifeTest {
 
     @Test
     public void tickShouldClearCells_with4Neighbours() {
+//        1_1
+//        _4_
+//        1_1
         Cell cellWithOneNeighbour1 = Cell.at(1, 1);
         Cell cellWithOneNeighbour2 = Cell.at(1, 3);
         Cell cellWithOneNeighbour3 = Cell.at(3, 1);
@@ -88,5 +97,29 @@ class GameOfLifeTest {
         assertThat(testGameOfLife.getLivingCells(), is(Collections.emptySet()));
     }
 
+    @Test
+    public void tickShouldKeepCells_with2Or3NeighboursOnly() {
+//        Blend of situations
+//        __1___1
+//       234____2
+//        3_1___1
+        Cell cellWithTwoNeighbours1 = Cell.at(0, 2);
+        Cell cellWithThreeNeighbours1 = Cell.at(1, 1);
+        Cell cellWithThreeNeighbours2 = Cell.at(1, 2);
+        Cell cellWithFourNeighbours = Cell.at(2, 2);
+        Cell cellWithOneNeighbour1 = Cell.at(3, 1);
+        Cell cellWithOneNeighbour2 = Cell.at(3, 3);
+        Cell cellWithOneNeighbour3 = Cell.at(7, 1);
+        Cell cellWithTwoNeighbours2 = Cell.at(7, 2);
+        Cell cellWithOneNeighbour4 = Cell.at(7, 3);
 
+        final GameOfLife testGameOfLife = new GameOfLife(Set.of(cellWithTwoNeighbours1, cellWithThreeNeighbours1, cellWithThreeNeighbours2, cellWithFourNeighbours, cellWithOneNeighbour1, cellWithOneNeighbour2, cellWithOneNeighbour3, cellWithTwoNeighbours2, cellWithOneNeighbour4));
+        testGameOfLife.tick();
+        assertThat(testGameOfLife.getLivingCells(), is(Set.of(
+            cellWithTwoNeighbours1,
+            cellWithTwoNeighbours2,
+            cellWithThreeNeighbours1,
+            cellWithThreeNeighbours2
+        )));
+    }
 }
