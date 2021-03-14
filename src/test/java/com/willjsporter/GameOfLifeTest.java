@@ -51,4 +51,28 @@ class GameOfLifeTest {
         assertThat(testGameOfLife.getLivingCells(), is(Collections.emptySet()));
     }
 
+    @Test
+    public void tickShouldKeepCellsAlive_forCellsWith2Neighbours() {
+        Pair cellWithNoNeighbours = Pair.of(-5, -5);
+        Pair cellWithOneNeighbour1 = Pair.of(1,1);
+        Pair cellWithOneNeighbour2 = Pair.of(1,3);
+        Pair cellWithTwoNeighbours = Pair.of(1,2);
+
+        final GameOfLife testGameOfLife = new GameOfLife(Set.of(cellWithNoNeighbours, cellWithOneNeighbour1, cellWithOneNeighbour2, cellWithTwoNeighbours));
+        testGameOfLife.tick();
+        assertThat(testGameOfLife.getLivingCells(), is(Set.of(cellWithTwoNeighbours)));
+    }
+
+    @Test
+    public void tickShouldKeepCellsAlive_forCellsWith3Neighbours() {
+        Pair cellWithOneNeighbour1 = Pair.of(1,1);
+        Pair cellWithOneNeighbour2 = Pair.of(1,3);
+        Pair cellWithOneNeighbour3 = Pair.of(3,3);
+        Pair cellWithThreeNeighbours = Pair.of(2,2);
+
+        final GameOfLife testGameOfLife = new GameOfLife(Set.of(cellWithOneNeighbour1, cellWithOneNeighbour2, cellWithOneNeighbour3, cellWithThreeNeighbours));
+        testGameOfLife.tick();
+        assertThat(testGameOfLife.getLivingCells(), is(Set.of(cellWithThreeNeighbours)));
+    }
+
 }
