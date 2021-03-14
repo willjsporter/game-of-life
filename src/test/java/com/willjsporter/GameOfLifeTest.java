@@ -75,4 +75,18 @@ class GameOfLifeTest {
         assertThat(testGameOfLife.getLivingCells(), is(Set.of(cellWithThreeNeighbours)));
     }
 
+    @Test
+    public void tickShouldClearCells_with4Neighbours() {
+        Cell cellWithOneNeighbour1 = Cell.at(1, 1);
+        Cell cellWithOneNeighbour2 = Cell.at(1, 3);
+        Cell cellWithOneNeighbour3 = Cell.at(3, 1);
+        Cell cellWithOneNeighbour4 = Cell.at(3, 3);
+        Cell cellWithFourNeighbours = Cell.at(2, 2);
+
+        final GameOfLife testGameOfLife = new GameOfLife(Set.of(cellWithOneNeighbour1, cellWithOneNeighbour2, cellWithOneNeighbour3, cellWithOneNeighbour4, cellWithFourNeighbours));
+        testGameOfLife.tick();
+        assertThat(testGameOfLife.getLivingCells(), is(Collections.emptySet()));
+    }
+
+
 }

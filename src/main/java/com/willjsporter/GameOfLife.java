@@ -19,7 +19,7 @@ public class GameOfLife {
 
     public void tick() {
         final Set<Cell> cellsToRemove = livingCells.stream()
-            .filter(cell -> countNeighbours(cell) < 2)
+            .filter(this::cellShouldDie)
             .collect(Collectors.toSet());
         livingCells.removeAll(cellsToRemove);
     }
@@ -29,5 +29,10 @@ public class GameOfLife {
             .filter(livingCell -> Math.abs(livingCell.getX() - cell.getX()) <= 1)
             .filter(livingCell -> Math.abs(livingCell.getY() - cell.getY()) <= 1)
             .count() - 1;
+    }
+
+    private boolean cellShouldDie(Cell cell) {
+        final long neighbourCount = countNeighbours(cell);
+        return neighbourCount < 2 || neighbourCount > 3;
     }
 }
