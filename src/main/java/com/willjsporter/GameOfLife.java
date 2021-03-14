@@ -6,7 +6,7 @@ import java.util.Set;
 
 public class GameOfLife {
 
-    private Set<Pair> livingCells;
+    private final Set<Pair> livingCells;
 
     public GameOfLife(Collection<Pair> initialLivingCells) {
         this.livingCells = new HashSet<>(initialLivingCells);
@@ -14,5 +14,9 @@ public class GameOfLife {
 
     public Set<Pair> getLivingCells() {
         return livingCells;
+    }
+
+    public void tick() {
+        livingCells.clear();
     }
 }
