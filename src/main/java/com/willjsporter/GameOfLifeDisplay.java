@@ -12,7 +12,7 @@ class GameOfLifeDisplay {
         this.grid = new char[gridSize][gridSize];
     }
 
-    public char[][] displayGameGrid() {
+    public char[][] getGameGrid() {
         setAllGridCellsBlank();
         markLivingCells();
         return this.grid;
