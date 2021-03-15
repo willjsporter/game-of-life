@@ -3,21 +3,41 @@ package com.willjsporter;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
+import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 class GameOfLifeDisplayTest {
 
-    private static int TEST_GRID_SIZE = 5;
+    private static int testGridSize;
 
     @Test
     public void displayGameGridShouldReturnBlankForEveryCell_whenEmptyGame() {
-        final GameOfLifeDisplay testGameOfLifeDisplay = new GameOfLifeDisplay(new GameOfLife(Collections.emptySet()), TEST_GRID_SIZE);
-        for(int i = 0; i < TEST_GRID_SIZE; i ++) {
-            for (int j = 0; j < TEST_GRID_SIZE; j++) {
+        testGridSize = 5;
+        final GameOfLifeDisplay testGameOfLifeDisplay = new GameOfLifeDisplay(new GameOfLife(Collections.emptySet()), testGridSize);
+
+        for(int i = 0; i < testGridSize; i ++) {
+            for (int j = 0; j < testGridSize; j++) {
                 assertThat(testGameOfLifeDisplay.displayGameGrid()[i][j], is('_'));
             }
         }
+    }
+
+    @Test
+    public void displayGameGridShouldReturnXForEveryCell_InGameOfLife() {
+        testGridSize = 3;
+        final GameOfLife gameOfLife = new GameOfLife(Set.of(Cell.at(0,1), Cell.at(1,2), Cell.at(2,1)));
+        final GameOfLifeDisplay testGameOfLifeDisplay = new GameOfLifeDisplay(gameOfLife, testGridSize);
+
+        assertThat(testGameOfLifeDisplay.displayGameGrid()[0][0], is('_'));
+        assertThat(testGameOfLifeDisplay.displayGameGrid()[0][1], is('X'));
+        assertThat(testGameOfLifeDisplay.displayGameGrid()[0][2], is('_'));
+        assertThat(testGameOfLifeDisplay.displayGameGrid()[1][0], is('_'));
+        assertThat(testGameOfLifeDisplay.displayGameGrid()[1][1], is('_'));
+        assertThat(testGameOfLifeDisplay.displayGameGrid()[1][2], is('X'));
+        assertThat(testGameOfLifeDisplay.displayGameGrid()[2][0], is('_'));
+        assertThat(testGameOfLifeDisplay.displayGameGrid()[2][1], is('X'));
+        assertThat(testGameOfLifeDisplay.displayGameGrid()[2][2], is('_'));
     }
 }

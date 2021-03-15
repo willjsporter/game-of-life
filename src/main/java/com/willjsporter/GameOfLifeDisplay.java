@@ -10,12 +10,22 @@ class GameOfLifeDisplay {
     public GameOfLifeDisplay(GameOfLife gameOfLife, int gridSize) {
         this.gameOfLife = gameOfLife;
         this.grid = new char[gridSize][gridSize];
-        for(int i = 0; i < gridSize; i ++) {
-            Arrays.fill(grid[i], '_');
-        }
     }
 
     public char[][] displayGameGrid() {
+        setAllGridCellsBlank();
+        markLivingCells();
         return this.grid;
+    }
+
+    private void setAllGridCellsBlank() {
+        for (char[] column : this.grid) {
+            Arrays.fill(column, '_');
+        }
+    }
+
+    private void markLivingCells() {
+        this.gameOfLife.getLivingCells()
+            .forEach(liveCell -> this.grid[liveCell.getX()][liveCell.getY()] = 'X');
     }
 }
