@@ -1,6 +1,5 @@
 package com.willjsporter;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -169,5 +168,35 @@ class GameOfLifeTest {
             createdCellAt23,
             createdCellAt33
         )));
+    }
+
+    @Test
+    public void tickRunsAsExpectedOverSeveralIterations() {
+//        1_1_     ==>     _43_     ==>     1_1_     ==>     ____
+//        _3_1     ==>     242_     ==>     2_2_     ==>     1_1_
+//        1___     ==>     ____     ==>     _2__     ==>     _2__
+        Cell cellAt11 = Cell.at(1,1);
+        Cell cellAt13 = Cell.at(1,3);
+        Cell cellAt33 = Cell.at(3,3);
+        Cell cellAt22 = Cell.at(2,2);
+        Cell cellAt42 = Cell.at(4,2);
+
+        final GameOfLife testGameOfLife = new GameOfLife(Set.of(cellAt11, cellAt13, cellAt33, cellAt22, cellAt42));
+
+        testGameOfLife.tick();
+
+        Cell cellAt12 = Cell.at(1, 2);
+        Cell cellAt23 = Cell.at(2, 3);
+        Cell cellAt32 = Cell.at(3, 2);
+        assertThat(testGameOfLife.getLivingCells(), is(Set.of(cellAt22, cellAt12, cellAt23, cellAt32, cellAt33)));
+
+        testGameOfLife.tick();
+
+        Cell cellAt21 = Cell.at(2, 1);
+        assertThat(testGameOfLife.getLivingCells(), is(Set.of(cellAt12, cellAt13, cellAt21, cellAt32, cellAt33)));
+
+        testGameOfLife.tick();
+
+        assertThat(testGameOfLife.getLivingCells(), is(Set.of(cellAt12, cellAt21, cellAt32)));
     }
 }
