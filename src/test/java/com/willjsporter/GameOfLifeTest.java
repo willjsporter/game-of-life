@@ -56,12 +56,11 @@ class GameOfLifeTest {
     }
 
     @Test
-    @Disabled
     public void tickShouldKeepCellsAlive_forCellsWith2Neighbours() {
         Cell cellWithNoNeighbours = Cell.at(-5, -5);
         Cell cellWithOneNeighbour1 = Cell.at(1,1);
-        Cell cellWithOneNeighbour2 = Cell.at(1,3);
-        Cell cellWithTwoNeighbours = Cell.at(1,2);
+        Cell cellWithOneNeighbour2 = Cell.at(3,3);
+        Cell cellWithTwoNeighbours = Cell.at(2,2);
 
         final GameOfLife testGameOfLife = new GameOfLife(Set.of(cellWithNoNeighbours, cellWithOneNeighbour1, cellWithOneNeighbour2, cellWithTwoNeighbours));
         testGameOfLife.tick();
@@ -69,11 +68,24 @@ class GameOfLifeTest {
     }
 
     @Test
-    @Disabled
-    public void tickShouldKeepCellsAlive_forCellsWith3Neighbours() {
-//        1_1
-//        _3_
-//        1__
+    public void tickShouldLeadToNewCell_whenEmptyCellHasExactly3Neighbours() {
+//        1_1       ==>     ___
+//        ___       ==>     _0_
+//        1__       ==>     ___
+        Cell cellWithOneNeighbour1 = Cell.at(1,1);
+        Cell cellWithOneNeighbour2 = Cell.at(1,3);
+        Cell cellWithOneNeighbour3 = Cell.at(3,3);
+
+        final GameOfLife testGameOfLife = new GameOfLife(Set.of(cellWithOneNeighbour1, cellWithOneNeighbour2, cellWithOneNeighbour3));
+        testGameOfLife.tick();
+        assertThat(testGameOfLife.getLivingCells(), is(Set.of(Cell.at(2,2))));
+    }
+
+    @Test
+    public void tickShouldKeepAliveOrCreateACell_ifLocationHas3Neighbours() {
+//        1_1       ==>     _2_
+//        _3_       ==>     23_
+//        1__       ==>     ___
         Cell cellWithOneNeighbour1 = Cell.at(1,1);
         Cell cellWithOneNeighbour2 = Cell.at(1,3);
         Cell cellWithOneNeighbour3 = Cell.at(3,3);
@@ -81,15 +93,17 @@ class GameOfLifeTest {
 
         final GameOfLife testGameOfLife = new GameOfLife(Set.of(cellWithOneNeighbour1, cellWithOneNeighbour2, cellWithOneNeighbour3, cellWithThreeNeighbours));
         testGameOfLife.tick();
-        assertThat(testGameOfLife.getLivingCells(), is(Set.of(cellWithThreeNeighbours)));
+
+        Cell createdCellAt12 = Cell.at(1, 2);
+        Cell createdCellAt23 = Cell.at(2, 3);
+        assertThat(testGameOfLife.getLivingCells(), is(Set.of(cellWithThreeNeighbours, createdCellAt12, createdCellAt23)));
     }
 
     @Test
-    @Disabled
-    public void tickShouldClearCells_with4Neighbours() {
-//        1_1
-//        _4_
-//        1_1
+    public void tickShouldClearCells_with4Neighbours_andCreateWhere3Neighbours() {
+//        1_1       ==>     _2_
+//        _4_       ==>     2_2
+//        1_1       ==>     _2_
         Cell cellWithOneNeighbour1 = Cell.at(1, 1);
         Cell cellWithOneNeighbour2 = Cell.at(1, 3);
         Cell cellWithOneNeighbour3 = Cell.at(3, 1);
@@ -98,47 +112,62 @@ class GameOfLifeTest {
 
         final GameOfLife testGameOfLife = new GameOfLife(Set.of(cellWithOneNeighbour1, cellWithOneNeighbour2, cellWithOneNeighbour3, cellWithOneNeighbour4, cellWithFourNeighbours));
         testGameOfLife.tick();
-        assertThat(testGameOfLife.getLivingCells(), is(Collections.emptySet()));
+
+        Cell createdCellAt12 = Cell.at(1, 2);
+        Cell createdCellAt21 = Cell.at(2, 1);
+        Cell createdCellAt23 = Cell.at(2, 3);
+        Cell createdCellAt32 = Cell.at(3, 2);
+        assertThat(testGameOfLife.getLivingCells(), is(Set.of(createdCellAt12, createdCellAt21, createdCellAt23, createdCellAt32)));
     }
 
     @Test
-    @Disabled
     public void tickShouldKeepCells_with2Or3NeighboursOnly() {
 //        Blend of situations
-//        __1___1
-//       234____2
-//        3_1___1
-        Cell cellWithTwoNeighbours1 = Cell.at(0, 2);
-        Cell cellWithThreeNeighbours1 = Cell.at(1, 1);
-        Cell cellWithThreeNeighbours2 = Cell.at(1, 2);
-        Cell cellWithFourNeighbours = Cell.at(2, 2);
-        Cell cellWithOneNeighbour1 = Cell.at(3, 1);
-        Cell cellWithOneNeighbour2 = Cell.at(3, 3);
-        Cell cellWithOneNeighbour3 = Cell.at(7, 1);
-        Cell cellWithTwoNeighbours2 = Cell.at(7, 2);
-        Cell cellWithOneNeighbour4 = Cell.at(7, 3);
+//       ___1___1_      ==>     _33______
+//       234____2_      ==>     33_0__121
+//       _3_1___1_      ==>     33_______
 
-        final GameOfLife testGameOfLife = new GameOfLife(Set.of(cellWithTwoNeighbours1, cellWithThreeNeighbours1, cellWithThreeNeighbours2, cellWithFourNeighbours, cellWithOneNeighbour1, cellWithOneNeighbour2, cellWithOneNeighbour3, cellWithTwoNeighbours2, cellWithOneNeighbour4));
+        Cell cellWithTwoNeighbours1 = Cell.at(1, 2);
+        Cell cellWithThreeNeighbours1 = Cell.at(2, 1);
+        Cell cellWithThreeNeighbours2 = Cell.at(2, 2);
+        Cell cellWithFourNeighbours = Cell.at(3, 2);
+        Cell cellWithOneNeighbour1 = Cell.at(4, 1);
+        Cell cellWithOneNeighbour2 = Cell.at(4, 3);
+        Cell cellWithOneNeighbour3 = Cell.at(8, 1);
+        Cell cellWithTwoNeighbours2 = Cell.at(8, 2);
+        Cell cellWithOneNeighbour4 = Cell.at(8, 3);
+
+        final GameOfLife testGameOfLife = new GameOfLife(Set.of(cellWithTwoNeighbours1,
+            cellWithThreeNeighbours1,
+            cellWithThreeNeighbours2,
+            cellWithFourNeighbours,
+            cellWithOneNeighbour1,
+            cellWithOneNeighbour2,
+            cellWithOneNeighbour3,
+            cellWithTwoNeighbours2,
+            cellWithOneNeighbour4
+        ));
+
         testGameOfLife.tick();
+
+        Cell createdCellAt11 = Cell.at(1, 1);
+        Cell createdCellAt42 = Cell.at(4, 2);
+        Cell createdCellAt62 = Cell.at(7, 2);
+        Cell createdCellAt82 = Cell.at(9, 2);
+        Cell createdCellAt23 = Cell.at(2, 3);
+        Cell createdCellAt33 = Cell.at(3, 3);
+
         assertThat(testGameOfLife.getLivingCells(), is(Set.of(
             cellWithTwoNeighbours1,
             cellWithTwoNeighbours2,
             cellWithThreeNeighbours1,
-            cellWithThreeNeighbours2
+            cellWithThreeNeighbours2,
+            createdCellAt11,
+            createdCellAt42,
+            createdCellAt62,
+            createdCellAt82,
+            createdCellAt23,
+            createdCellAt33
         )));
-    }
-
-    @Test
-    public void tickShouldLeadToNewCell_whenEmptyCellHasExactly3Neighbours() {
-//        1_1
-//        ___
-//        1__
-        Cell cellWithOneNeighbour1 = Cell.at(1,1);
-        Cell cellWithOneNeighbour2 = Cell.at(1,3);
-        Cell cellWithOneNeighbour3 = Cell.at(3,3);
-
-        final GameOfLife testGameOfLife = new GameOfLife(Set.of(cellWithOneNeighbour1, cellWithOneNeighbour2, cellWithOneNeighbour3));
-        testGameOfLife.tick();
-        assertThat(testGameOfLife.getLivingCells(), is(Set.of(Cell.at(2,2))));
     }
 }
