@@ -25,7 +25,9 @@ class GameOfLifeDisplay {
     }
 
     private void markLivingCells() {
-        this.gameOfLife.getLivingCells()
+        this.gameOfLife.getLivingCells().stream()
+            .filter(livingCell -> livingCell.getX() >= 0 && livingCell.getX() < grid.length)
+            .filter(livingCell -> livingCell.getY() >= 0 && livingCell.getY() < grid.length)
             .forEach(liveCell -> this.grid[liveCell.getX()][liveCell.getY()] = 'X');
     }
 }

@@ -25,7 +25,7 @@ class GameOfLifeDisplayTest {
     }
 
     @Test
-    public void displayGameGridShouldReturnXForEveryCell_InGameOfLife() {
+    public void displayGameGridShouldReturnXForEveryCell_InGameOfLife_inScope() {
         testGridSize = 3;
         final GameOfLife gameOfLife = new GameOfLife(Set.of(Cell.at(0,1), Cell.at(1,2), Cell.at(2,1)));
         final GameOfLifeDisplay testGameOfLifeDisplay = new GameOfLifeDisplay(gameOfLife, testGridSize);
@@ -39,5 +39,17 @@ class GameOfLifeDisplayTest {
         assertThat(testGameOfLifeDisplay.displayGameGrid()[2][0], is('_'));
         assertThat(testGameOfLifeDisplay.displayGameGrid()[2][1], is('X'));
         assertThat(testGameOfLifeDisplay.displayGameGrid()[2][2], is('_'));
+    }
+
+    @Test
+    public void displayGameGridShouldIgnoreCells_InGameOfLife_outOfScope() {
+        testGridSize = 2;
+        final GameOfLife gameOfLife = new GameOfLife(Set.of(Cell.at(100, 100), Cell.at(0, 1)));
+        final GameOfLifeDisplay testGameOfLifeDisplay = new GameOfLifeDisplay(gameOfLife, testGridSize);
+
+        assertThat(testGameOfLifeDisplay.displayGameGrid()[0][0], is('_'));
+        assertThat(testGameOfLifeDisplay.displayGameGrid()[0][1], is('X'));
+        assertThat(testGameOfLifeDisplay.displayGameGrid()[1][0], is('_'));
+        assertThat(testGameOfLifeDisplay.displayGameGrid()[1][1], is('_'));
     }
 }
