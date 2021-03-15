@@ -18,6 +18,18 @@ class GameOfLifeDisplay {
         return this.grid;
     }
 
+    public void printGameGrid() {
+        setAllGridCellsBlank();
+        markLivingCells();
+        for (int i = 0; i < this.grid.length; i++) {
+            for (int j = 0; j < this.grid.length; j++) {
+                System.out.print(this.grid[i][j]);
+            }
+            System.out.print("\n");
+        }
+        System.out.println("\n\n");
+    }
+
     private void setAllGridCellsBlank() {
         for (char[] column : this.grid) {
             Arrays.fill(column, '_');
